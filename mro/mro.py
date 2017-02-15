@@ -90,20 +90,20 @@ class mro_order(models.Model):
         if self.asset_id:
             self.category_ids = self.asset_id.category_ids
 
-    @api.onchange('date_planned')
-    def onchange_planned_date(self):
-        self.date_scheduled = self.date_planned
-
-    @api.onchange('date_scheduled')
-    def onchange_scheduled_date(self):
-        self.date_execution = self.date_scheduled
-
-    @api.onchange('date_execution')
-    def onchange_execution_date(self):
-        if self.state == 'draft':
-            self.date_planned = self.date_execution
-        else:
-            self.date_scheduled = self.date_execution
+#     @api.onchange('date_planned')
+#     def onchange_planned_date(self):
+#         self.date_scheduled = self.date_planned
+# 
+#     @api.onchange('date_scheduled')
+#     def onchange_scheduled_date(self):
+#         self.date_execution = self.date_scheduled
+# 
+#     @api.onchange('date_execution')
+#     def onchange_execution_date(self):
+#         if self.state == 'draft':
+#             self.date_planned = self.date_execution
+#         else:
+#             self.date_scheduled = self.date_execution
 
     @api.onchange('task_id')
     def onchange_task(self):
@@ -197,18 +197,18 @@ class mro_order(models.Model):
             vals['name'] = self.env['ir.sequence'].next_by_code('mro.order') or '/'
         return super(mro_order, self).create(vals)
 
-    @api.multi
-    def write(self, vals):
-        if vals.get('date_execution') and not vals.get('state'):
-            # constraint for calendar view
-            for order in self:
-                if order.state == 'draft':
-                    vals['date_planned'] = vals['date_execution']
-                    vals['date_scheduled'] = vals['date_execution']
-                elif order.state in ('released','ready'):
-                    vals['date_scheduled'] = vals['date_execution']
-                else: del vals['date_execution']
-        return super(mro_order, self).write(vals)
+#     @api.multi
+#     def write(self, vals):
+#         if vals.get('date_execution') and not vals.get('state'):
+#             # constraint for calendar view
+#             for order in self:
+#                 if order.state == 'draft':
+#                     vals['date_planned'] = vals['date_execution']
+#                     vals['date_scheduled'] = vals['date_execution']
+#                 elif order.state in ('released','ready'):
+#                     vals['date_scheduled'] = vals['date_execution']
+#                 else: del vals['date_execution']
+#         return super(mro_order, self).write(vals)
 
 
 class mro_order_parts_line(models.Model):

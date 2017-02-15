@@ -1,0 +1,144 @@
+<?xml version="1.0"?>
+<openerp>
+	<data>
+
+		<record model="ir.ui.view" id="view_purchase_requisition_form_addprocurements">
+			<field name="name">purchase.requisition.form</field>
+			<field name="model">purchase.requisition</field>
+			<field name="inherit_id"
+				ref="purchase_requisition.view_purchase_requisition_form" />
+			<field name="arch" type="xml">
+				<field name="company_id" position="after">
+					<field name="merge_to_id" attrs="{'invisible':[('merge_to_id','=',False)]}" />
+				</field>
+				<xpath expr="//notebook" position="inside">
+					<page string="Merged Info" attrs="{'invisible':[('merged','=',False)]}">
+						<group>
+							<group>
+								<field name="merged" />
+							</group>
+							<group />
+						</group>
+						<group string="Merged Bids From">
+							<field name="merge_from_ids" nolabel="1" colspan="4" />
+						</group>
+						<group string="Merged Procurements" invisible="1">
+							<field name="mprocurement_ids" nolabel="1" colspan="4" />
+						</group>
+					</page>
+				</xpath>
+				<field name='origin' position="replace" />
+				<field name="date_end" position="after">
+					<field name="origin" attrs="{'readonly': [('state','in','done')]}" />
+				</field>
+
+				<!-- Best Supplier -->
+				<xpath
+					expr="//button[@name='%(purchase_requisition.action_purchase_requisition_to_so)d']"
+					position="replace" />
+				<xpath
+					expr="//button[@name='%(purchase_requisition.action_purchase_requisition_to_so)d']"
+					position="replace" />
+
+				<xpath expr="//button[@name='action_in_progress']" position="before">
+					<button name="action_get_quote" type="object" string="New Quotation"
+						class="btn-primary"
+						attrs="{'invisible': [('state', 'not in', ('draft', 'in_progress'))]}" />
+				</xpath>
+				<xpath expr="//button[@name='action_in_progress']" position="attributes">
+					<attribute name="string">Send to Suppliers</attribute>
+				</xpath>
+				<xpath
+					expr="//button[@name='%(purchase_requisition.action_purchase_requisition_list)d']"
+					position="attributes">
+					<attribute name='attrs'>{'invisible': [('line_ids', '=', [])]}
+					</attribute>
+				</xpath>
+				<xpath expr="//button[@name='action_open']" position="attributes">
+					<attribute name="string">Bid Selection</attribute>
+				</xpath>
+				<field name='line_ids' position="attributes">
+					<attribute name="attrs">{'readonly': [('state', 'not in',
+						('draft','in_progress'))]}
+					</attribute>
+				</field>
+				<button name='action_done' position="before">
+					<button name="open_bid_lines" type="object" string="Compare RFQ's/Bid's"
+						attrs="{'invisible': [('state', 'not in', ('open'))]}" class="btn-primary" />
+				</button>
+				<button name="action_done" position="replace" />
+				<button name="action_cancel" position="attributes">
+					<attribute name="states">draft,open,in_progress</attribute>
+				</button>
+			</field>
+		</record>
+
+		<record id="purchase_order_line_tree_tender" model="ir.ui.view">
+			<field name="name">purchase.order.line.tree.tender</field>
+			<field name="model">purchase.order.line</field>
+			<field eval="55" name="priority" />
+			<field name="arch" type="xml">
+				<tree string="Purchase Order Lines" create="false"
+					colors="blue:confirmed;black:not confirmed">
+					<field name="name" />
+					<field name="partner_id" string="Supplier" />
+					<field name="product_id" />
+					<field name="price_unit" />
+					<field name="product_qty" />
+					<field name="quantity_bid" />
+					<field name="product_uom" groups="product.group_uom" />
+					<field name="confirmed" invisible="1" />
+					<field name="bid_subtotal" string="To Subtotal" sum="Total values" />
+					<field name="price_subtotal" invisible="1" />
+					<field name="state" invisible="1" />
+					<button name="%(action_bid_line_qty)d" type="action"
+						string="Change Quantity" icon="fa-plus"
+						attrs="{'invisible': ['|', ('confirmed', '=', True), ('state', 'not in', ('draft', 'sent', 'to approve'))]}" />
+					<button name="action_confirm_line"
+						attrs="{'invisible': ['|', ('confirmed', '=', True), ('state', 'not in', ('draft', 'sent', 'to approve'))]}"
+						type="object" string="Confirm Order" icon="fa-check" />
+					<button name="action_draft_line" attrs="{'invisible': [('confirmed', '=', False)]}"
+						type="object" string="Cancel Choice" icon="fa-times" />
+				</tree>
+			</field>
+		</record>
+
+		<record id="purchase_order_tenderline_search" model="ir.ui.view">
+			<field name="name">purchase.order.tenderline.search</field>
+			<field eval="55" name="priority" />
+			<field name="model">purchase.order.line</field>
+			<field name="arch" type="xml">
+				<search string="Search Purchase Order">
+					<field name="order_id" />
+					<field name="product_id" />
+					<field name="partner_id" string="Supplier"
+						filter_domain="[('partner_id', 'child_of', self)]" />
+					<filter name="hide_cancelled" string="Hide cancelled/done lines"
+						domain="[('order_id.state', '!=', 'cancel')]" />
+					<group expand="0" string="Group By">
+						<filter name="groupby_supplier" string="Supplier" icon="terp-partner"
+							domain="[]" context="{'group_by' : 'partner_id'}" />
+						<filter name="groupby_product" string="Product"
+							icon="terp-accessories-archiver" domain="[]"
+							context="{'group_by' : 'product_id'}" />
+						<filter icon="terp-gtk-jump-to-rtl" string="Order Reference"
+							domain="[]" context="{'group_by' :'order_id'}" />
+						<filter string="Status" icon="terp-stock_effects-object-colorize"
+							domain="[]" context="{'group_by' : 'state'}" />
+					</group>
+				</search>
+			</field>
+		</record>
+
+		<record id="purchase_line_tree" model="ir.actions.act_window">
+			<field name="name">Bid Lines</field>
+			<field name="res_model">purchase.order.line</field>
+			<field name="context">{"search_default_groupby_product" : True,}</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="purchase_order_line_tree_tender" />
+			<field name="search_view_id" ref="purchase_order_tenderline_search" />
+		</record>
+
+	</data>
+</openerp>

@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<openerp>
+	<data>
+
+		<record id="maintanance_order_analytic" model="account.analytic.account">
+			<field name="name">Maintenance</field>
+		</record>
+
+		<record id="mro_order_form_timesheet" model="ir.ui.view">
+			<field name="name">mro.order.timesheet</field>
+			<field name="model">mro.order</field>
+			<field name="priority">50</field>
+			<field name="inherit_id" ref="mro.mro_order_form_view" />
+			<field name="arch" type="xml">
+				<xpath expr="//page[3]/separator[1]" position="before">
+					<group string="Work Summary">
+						<group>
+							<group>
+								<field name="analytic_account_id" readonly="1" />
+							</group>
+							<group />
+						</group>
+						<field name="work_ids" nolabel="1" colspan="4">
+							<tree string="Task Timesheet" editable="top">
+								<field name="user_id" />
+								<field name="name" required="1" />
+								<field name="date" required="1" />
+								<field name="initial_time" />
+								<field name="end_time" />
+								<field name="duration" />
+								<field name="duration_seconds" invisible="1" />
+								<field name="task_id" invisible="1" />
+							</tree>
+						</field>
+						<group class="oe_subtotal_footer oe_right" name="total_hours_spent">
+							<field name="total_hours_spent" class="oe_subtotal_footer_separator" />
+						</group>
+					</group>
+				</xpath>
+			</field>
+		</record>
+
+    <!-- Run Old Orders -->
+    <function model="mro.order" name="generate_analytic_account"/>
+
+	</data>
+</openerp>

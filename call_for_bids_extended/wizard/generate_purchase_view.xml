@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+		<!-- Make the Purchase Order -->
+
+		<record id="view_generate_po" model="ir.ui.view">
+			<field name="name">Generate Purchase Order</field>
+			<field name="model">generate.po</field>
+			<field name="arch" type="xml">
+				<form string="Generate Purchase Order">
+					<group string="Do you want to create a purchase order for selected confirmed lines?" />
+					<footer>
+						<button name="generate_po" string="Create Purchase Order" type="object"
+							class="oe_highlight" />
+						or
+						<button string="Cancel" class="oe_link" special="cancel" />
+					</footer>
+				</form>
+			</field>
+		</record>
+
+		<act_window name="Generate PO" res_model="generate.po"
+			src_model="purchase.order.line" view_mode="form" target="new"
+			key2="client_action_multi" id="action_view_generate_po" />
+
+	</data>
+</openerp>
+

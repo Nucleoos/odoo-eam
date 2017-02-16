@@ -51,6 +51,6 @@ Required modules:
         'views/report_mro_order.xml',
         'views/report_mro_request.xml',
     ],
-    'application': True,
+    'application': False,
 }
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

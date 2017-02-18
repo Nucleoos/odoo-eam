@@ -93,11 +93,11 @@ class mro_order(models.Model):
 #     @api.onchange('date_planned')
 #     def onchange_planned_date(self):
 #         self.date_scheduled = self.date_planned
-# 
+#
 #     @api.onchange('date_scheduled')
 #     def onchange_scheduled_date(self):
 #         self.date_execution = self.date_scheduled
-# 
+#
 #     @api.onchange('date_execution')
 #     def onchange_execution_date(self):
 #         if self.state == 'draft':
@@ -133,27 +133,30 @@ class mro_order(models.Model):
                 if any(states) or len(states) == 0: res = False
         return res
 
-    def action_confirm(self):        
+    def _prepare_procurement_values(self, group, order, line):
+        return {
+            'name': order.name,
+            'origin': order.name,
+            'company_id': order.company_id.id,
+            'group_id': group.id,
+            'date_planned': order.date_planned,
+            'product_id': line.parts_id.id,
+            'product_qty': line.parts_qty,
+            'product_uom': line.parts_uom.id,
+            'location_id': order.asset_id.property_stock_asset.id
+        }
+
+    def action_confirm(self):
         procurement_obj = self.env['procurement.order']
         for order in self:
             proc_ids = []
             group_id = self.env['procurement.group'].create({'name': order.name})
             for line in order.parts_lines:
-                vals = {
-                    'name': order.name,
-                    'origin': order.name,
-                    'company_id': order.company_id.id,
-                    'group_id': group_id.id,
-                    'date_planned': order.date_planned,
-                    'product_id': line.parts_id.id,
-                    'product_qty': line.parts_qty,
-                    'product_uom': line.parts_uom.id,
-                    'location_id': order.asset_id.property_stock_asset.id
-                    }
+                vals = order._prepare_procurement_values(group_id, order, line)
                 proc_id = procurement_obj.create(vals)
                 proc_ids.append(proc_id)
             procurement_obj.run(proc_ids)
-            order.write({'state':'released','procurement_group_id':group_id.id})
+            order.write({'state': 'released', 'procurement_group_id':group_id.id})
         return 0
 
     def action_ready(self):

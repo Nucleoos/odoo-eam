@@ -4,13 +4,13 @@
 
         <!-- Top menu item -->
         <menuitem name="Maintenance"
-            id="base.menu_mro_root"
+            id="menu_mro_root"
             sequence="80"/>
 
         <!-- Asset menu -->
         <menuitem name="Assets"
             id="menu_maintenance_assets"
-            parent="base.menu_mro_root"
+            parent="menu_mro_root"
             groups="asset.group_mro_customer"
             sequence="9"/>
 
@@ -137,7 +137,7 @@
                 </kanban>
             </field>
         </record>
-        
+
         <!-- Asset Search  -->
         <record model="ir.ui.view" id="assets_search">
             <field name="name">Asset Search</field>
@@ -272,18 +272,18 @@
         <!-- Report menu -->
         <menuitem name="Reports"
             id="menu_maintenance_report"
-            parent="base.menu_mro_root"
+            parent="menu_mro_root"
             groups="asset.group_mro_customer"
             sequence="30"/>
 
         <!-- Configuration menu -->
         <menuitem name="Configuration"
             id="menu_maintenance_config"
-            parent="base.menu_mro_root"
+            parent="menu_mro_root"
             groups="asset.group_mro_manager"
             sequence="200"/>
-            
-        <!-- Asset State Form View  -->        
+
+        <!-- Asset State Form View  -->
         <record id="asset_state_form_view" model="ir.ui.view">
             <field name="name">asset.state.form</field>
             <field name="model">asset.state</field>
@@ -306,7 +306,7 @@
                 </form>
             </field>
         </record>
-        
+
         <!-- Asset State Kanban View  -->
         <record model="ir.ui.view" id="asset_state_kanban_view">
             <field name="name">Asset State Kanban</field>

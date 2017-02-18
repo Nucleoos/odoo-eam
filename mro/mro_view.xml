@@ -2,16 +2,10 @@
 <openerp>
 	<data>
 
-        <!-- Top menu item -->
-        <menuitem name="Maintenance"
-            id="menu_mro_root"
-            groups="asset.group_mro_customer"
-            sequence="80"/>
-
         <!-- Maintenance menu -->
         <menuitem name="Maintenance"
             id="menu_mro_maintenance"
-            parent="base.menu_mro_root"
+            parent="asset.menu_mro_root"
             sequence="1"/>
 
         <!-- Maintenance request menu -->
@@ -306,7 +300,7 @@
         <!-- Parts menu -->
         <menuitem name="Parts"
             id="menu_maintenance_parts"
-            parent="base.menu_mro_root"
+            parent="asset.menu_mro_root"
             groups="asset.group_mro_user"
             sequence="9"/>
 
@@ -415,7 +409,7 @@
 
         <menuitem name="Tasks"
             id="menu_maintenance_tasks"
-            parent="base.menu_mro_root"
+            parent="asset.menu_mro_root"
             sequence="9"/>
 
         <menuitem name="Tasks"

@@ -220,8 +220,9 @@ class merge_bids(models.TransientModel):
         #merge old requisition.
         procure_ids = list(set(procure_ids))
         if procure_ids:
-            proc_obj.write(procure_ids, {'requisition_id': new_tender_id})
- 
+            procids = proc_obj.browse(procure_ids)
+            procids.write({'requisition_id': new_tender_id})
+             
         #add merged id to cancel tenders
         need_to_cancel and all_need_to_cancel.write({'merge_to_id': new_tender_id})
         #add valeus to new tender

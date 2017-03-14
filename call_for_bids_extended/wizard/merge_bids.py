@@ -359,6 +359,7 @@ class merge_bids(models.TransientModel):
                             'name': self.env['ir.sequence'].next_by_code('purchase.order.requisition') or '/',
                             'warehouse_id': tender_rec.warehouse_id.id,
                             'company_id': tender_rec.company_id.id,
+                            'picking_type_id': tender_rec.picking_type_id.id,
                             })
         return req_rec.id
 
